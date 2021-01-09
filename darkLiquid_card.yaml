@@ -1,0 +1,313 @@
+uid: darkLiquid_card
+tags:
+  - small
+  - dark
+  - custom
+  - liquid
+props:
+  parameters:
+    - context: item
+      description: Set an item which you want to control
+      label: Item
+      name: item
+      required: false
+      type: TEXT
+      groupName: general
+    - label: Value symbol
+      description: The value symbol shown after the item-value
+      name: valueSymbol
+      required: false
+      type: TEXT
+      groupName: general
+    - description: valueSymbol high or low
+      label: Value symbol position
+      name: valueSymbolPos
+      required: false
+      type: BOOLEAN
+      groupName: general
+      advanced: true
+    - description: Set the lowest value, that your item can have. (<b>default:</b> 0)
+      label: Items MIN value
+      name: minValue
+      required: false
+      type: TEXT
+      groupName: general
+    - description: Set the highest value, that your item can have. (<b>default:</b> 100)
+      label: Items MAX value
+      name: maxValue
+      required: false
+      type: TEXT
+      groupName: general
+    - description: Show trend graph instead of liquid background
+      label: Trend graph
+      name: showTrend
+      required: false
+      type: BOOLEAN
+      groupName: general
+    - label: Headline text
+      name: headline
+      required: false
+      type: TEXT
+      groupName: header
+    - label: Subheadline text
+      name: subheadline
+      required: false
+      type: TEXT
+      groupName: header   
+    - label: Hero icon image url
+      name: heroIcon
+      required: false
+      type: TEXT
+      groupName: images
+    - description: Activating Stepper element to control item which you selected above
+      label: Show stepper buttons
+      name: showStepper
+      required: false
+      type: BOOLEAN
+      groupName: controls
+    - description: Activating Toggle element to control item which you selected above
+      label: Show toggle
+      name: showToggle
+      required: false
+      type: BOOLEAN
+      groupName: controls
+    - description: Activating Slider element to control item which you selected above
+      label: Show slider
+      name: showSlider
+      required: false
+      type: BOOLEAN
+      groupName: controls
+
+  parameterGroups:
+    - name: general
+      label: General settings
+      description: Most important widget settings
+    - name: header
+      label: Header area  
+    - name: controls
+      label: Control settings
+      description: Controls to manipulate your item-state (only use one of them)
+    - name: images
+      label: Images
+timestamp: Jan 9, 2021, 11:43:36 AM
+component: f7-block
+config:
+  style:
+    position: relative
+    -ms-user-select: None
+    -moz-user-select: None
+    -webkit-user-select: None
+    user-select: None
+  class:
+    - no-padding
+    - no-margin
+slots:
+  default:
+    - component: oh-image
+      config:
+        url: "=props.heroIcon ? props.heroIcon : ''"
+        style:
+          position: absolute
+          top: -15px
+          right: -10px
+          width: 100%
+          max-width: min(max(50px, 15vw), 80px)
+          z-index: 99
+    - component: f7-card
+      config:
+        style:
+          max-height: 200px
+          background-color: rgb(57,60,76)
+          border-radius: 20px
+          overflow: hidden
+          position: relative
+      slots:
+        default:
+          - component: oh-repeater
+            config:
+              visible: "=props.showTrend ? false : true"
+              sourceType: range
+              for: liquid
+              rangeStart: "=!props.minValue ? 0 : Number(props.minValue)"
+              rangeStop: "=!props.maxValue ? 100 : Number(props.maxValue)"         
+            slots:
+              default:
+                - component: f7-block
+                  config:
+                    visible: =items[props.item].state == loop.liquid_idx
+                    style:
+                      background-image: url('data:image/svg+xml,%3C%3Fxml version="1.0" encoding="UTF-8" standalone="no"%3F%3E%3C!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"%3E%3Csvg width="100%25" height="100%25" viewBox="0 0 100%25 100%25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.41421;"%3E%3Cg transform="matrix(1,0,0,1.16583,0,-41.4573)"%3E%3Cpath d="M2100,51C1877.85,82.213 1653.26,55.095 1427.19,70.645C1309.15,78.764 1091.86,41.538 882.9,59.37C605.267,83.062 300.648,21.379 0,51L0,250L2100,250L2100,51Z" style="fill:url(%23_Linear1);"/%3E%3C/g%3E%3Cdefs%3E%3ClinearGradient id="_Linear1" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-2,-214.44,250,-1.71552,1149,250)"%3E%3Cstop offset="0" style="stop-color:rgb(255,136,0);stop-opacity:1"/%3E%3Cstop offset="1" style="stop-color:rgb(255,197,28);stop-opacity:1"/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E%0A')
+                      position: absolute
+                      height: 100%
+                      width: 100%
+                      left: 0
+                      bottom: "=Math.fround((Number(loop.liquid) - (!props.maxValue ? 100 : Number(props.maxValue))) * (100 / (!props.maxValue ? 100 : Number(props.maxValue) - (!props.minValue ? 0 : Number(props.minValue))))) + '%'"
+                      z-index: 1
+          - component: f7-card-content
+            config:
+              style:
+                height: 100%
+                display: flex
+                flex-direction: column
+                position: relative
+                z-index: 999
+            slots:
+              default:
+                - component: f7-row
+                  config:
+                    style:
+                      z-index: 999
+                  slots:
+                    default:
+                      - component: f7-col
+                        slots:
+                          default:
+                            - component: Label
+                              config:
+                                propsParameterGroup: header
+                                text: '=(props.headline) ? props.headline : "Headline"'
+                                style:
+                                  white-space: nowrap
+                                  text-overflow: ellipsis
+                                  overflow: hidden
+                                  display: block
+                                  width: 100%
+                                  color: rgba(255,255,255,1)
+                                  letter-spacing: .75px
+                                  font-size: min(max(14px, 4vw), 21px)
+                                  font-weight: 600
+                            - component: Label
+                              config:
+                                actionPropsParameterGroup: header
+                                text: '=(props.subheadline) ? props.subheadline : "Subheadline"'
+                                style:
+                                  white-space: nowrap
+                                  text-overflow: ellipsis
+                                  overflow: hidden
+                                  color: rgba(255,255,255,.7)
+                                  letter-spacing: .75px
+                                  font-size: min(max(9px, 2.5vw), 12px)
+                - component: f7-row
+                  config:
+                    style:
+                      z-index: 999
+                  slots:
+                    default:
+                      - component: f7-col
+                        config:
+                          class: '=props.valueSymbolPos ? props.valueSymbolPos : "align-items-flex-end"'
+                          style:
+                            display: flex
+                            justify-content: flex-start
+                            position: relative
+                        slots:
+                          default:
+                            - component: Label
+                              config:
+                                text: =items[props.item].state
+                                style:
+                                  color: rgba(255,255,255,1)
+                                  text-shadow: 2px 2px rgba(0,0,0,.25)
+                                  font-size: min(max(32px, 9vw), 51px)
+                                  font-weight: 600
+                            - component: Label
+                              config:
+                                text: =props.valueSymbol
+                                style:
+                                  color: rgba(255,255,255,1)
+                                  text-shadow: 2px 2px rgba(0,0,0,.25)
+                                  font-size: min(max(21px, 5.75vw), 32px)
+                                  font-weight: 600
+                      - component: f7-col
+                        config:
+                          style:
+                            display: flex
+                            align-self: center
+                            justify-content: flex-end
+                            align-items: flex-end
+                            flex-direction: column
+                        slots:
+                          default:
+                            - component: oh-icon
+                              config:
+                                icon: power
+                                visible: =items[props.item].state === "0"
+                                action: command
+                                actionOptions: COMMAND
+                                actionItem: =props.item
+                                actionPropsParameterGroup: action
+                                actionCommand: ON
+                                width: 20
+                                height: 20
+                                style:
+                                  cursor: pointer
+                                  filter: invert()
+                            - component: oh-icon
+                              config:
+                                icon: power
+                                visible: =items[props.item].state > "0"
+                                action: command
+                                actionOptions: COMMAND
+                                actionItem: =props.item
+                                actionCommand: OFF
+                                width: 20
+                                height: 20
+                                style:
+                                  cursor: pointer
+                                  filter: invert(14%) sepia(99%) saturate(7416%) hue-rotate(0deg) brightness(94%) contrast(114%)
+                - component: f7-row
+                  slots:
+                    default:
+                      - component: f7-col
+                        config:
+                          class: '=props.alignActionLeft ? props.alignActionLeft : "justify-content-flex-end"'
+                          style:
+                            height: 28px
+                            max-height: 28px
+                            display: flex
+                        slots:
+                          default:
+                            - component: oh-stepper
+                              config:
+                                class: '=props.showStepper ? props.showStepper : "display-none"'
+                                raised: true
+                                buttonsOnly: true
+                                small: true
+                                autorepeat: true
+                                min: =props.minValue
+                                max: =props.maxValue
+                                step: 1
+                                color: white
+                                style:
+                                  list-style-type: none
+                                item: =props.item
+                            - component: oh-toggle
+                              config:
+                                class: '=props.showToggle ? props.showToggle : "display-none"'
+                                color: yellow
+                                item: =props.item
+                                style:
+                                  align-self: flex-end
+                            - component: oh-slider
+                              config:
+                                class: '=props.showSlider ? props.showSlider : "display-none"'
+                                step: "1"
+                                min: =props.minValue
+                                max: =props.maxValue
+                                item: =props.item
+                                style:
+                                  align-self: flex-end
+                                  font-color: yellow
+                            - component: oh-trend
+                              config:
+                                visible: "=props.showTrend ? true : false"
+                                trendItem: =props.item
+                                trendGradient:
+                                  - "#FFE7DD"
+                                  - "#FFD1BD"
+                                style:
+                                  position: absolute
+                                  bottom: 0
+                                  left: 0
+                                  width: 100%
+                                  height: 100%
