@@ -1,0 +1,4 @@
+Bridge openweathermap:weather-api:bridge "OWM Bridge" [apikey="YOUR-API-KEY", refreshInterval=30, language="en"] {
+    Thing weather-and-forecast local "Local Weather And Forecast" [location="YOUR-GEO-LOCATION", forecastDays=7]
+    Thing onecall local "OneCall API" [location="YOUR-GEO-LOCATION", forecastHours=25, forecastDays=7]
+}
