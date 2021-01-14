@@ -1,0 +1,573 @@
+uid: weatherPopup_extended
+tags:
+  - weather
+  - popup
+  - daily forecast
+  - OpenWeatherMap
+  - extended
+props:
+  parameters:
+    - description: <b>Optional prefix</b> for item names.
+      label: Item prefix
+      name: itemPrefix
+      required: false
+      type: TEXT
+      groupName: general
+    - description: <b>Additional prefix</b> for item names that belongs to another Things channel (valid for 'StationName' as it might differ)
+      label: Additional item prefix
+      name: itemPrefix2
+      required: false
+      type: TEXT
+      groupName: general
+      advanced: true
+    - description: The number of hours you want to forecast (<u>default:</u> <b>12</b>)
+      label: Number of hours to forecast
+      name: forecastHours
+      required: false
+      type: TEXT
+      groupName: general
+    - description: The number of days you want to forecast (<u>default:</u> <b>3</b>)
+      label: Number of days to forecast
+      name: forecastDays
+      required: false
+      type: TEXT
+      groupName: general
+    - description: Activate day & night Indication on hourly forecast (background color & sunrise / sunset indicator icon)
+      label: Show sunrise & sunset
+      name: sunIndicator
+      required: false
+      type: BOOLEAN
+      groupName: general
+    - description: Acitvate 24-hour clock-format (<u>default:</u> <b>12-hour clock-format</b>)
+      label: 24h clock-format
+      name: dateFormat
+      required: false
+      type: BOOLEAN
+      groupName: general
+    - description: Add suffix to the timestamp
+      label: Custom timestamp suffix
+      name: timestampSuffix
+      required: false
+      type: TEXT
+      groupName: general
+    - description: Overwrite the location header
+      label: Location title
+      name: locationTitle
+      required: false
+      type: TEXT
+      groupName: general
+    - description: Folder where you stored your weather-images (<u>default:</u> <b>/static/files/weather_img/</b>)
+      label: Image folder
+      name: imageFolder
+      required: false
+      type: TEXT
+      groupName: images
+    - description: Select a local sight as a centered image (preferably *.svg with the <b>image-content aligned at the bottom</b>)
+      label: Local sight image-name
+      name: localSightImg
+      required: false
+      type: TEXT
+      groupName: images
+    - description: Select a global background-image which will be visible on daytime
+      label: Global background image (day-cycle)
+      name: globalBackgroundDayImg
+      required: true
+      type: TEXT
+      groupName: images
+    - description: Select a global background-image which will be visible on nighttime
+      label: Global background image (night-cycle)
+      name: globalBackgroundNightImg
+      required: true
+      type: TEXT
+      groupName: images
+    - description: Disable background images (local sight & background-image)
+      label: Disable local-sight image
+      name: disableLocalSightBg
+      required: false
+      type: BOOLEAN
+      groupName: images
+      advanced: true
+    - description: Alternative title for 'x-hour forecast' within the segmented control, where x gets replaced by the number of hours automatically. (<u>default:</u> <b>-hour forecast</b>)
+      label: Translation 'x-hour forecast'
+      name: wordingForecastHours
+      required: false
+      type: TEXT
+      groupName: wording
+    - description: Alternative title for 'x-day forecast' within the segmented control, where x gets replaced by the number of days automatically. (<u>default:</u> <b>-day forecast</b>)
+      label: Translation 'x-day forecast'
+      name: wordingForecastDays
+      required: false
+      type: TEXT
+      groupName: wording
+    - description: Alternative title for 'Now' in the 12-hour forecast tab
+      label: Translation 'Now'
+      name: wordingNow
+      required: false
+      type: TEXT
+      groupName: wording
+    - description: Alternative title for 'Today' in the 3-day-forecast tab
+      label: Translation 'Today'
+      name: wordingToday
+      required: false
+      type: TEXT
+      groupName: wording
+    - description: Alternative text for 'Sunrise at' in the icon-tooltip (only visible if you've activated the day & night indication)
+      label: Translation 'Sunrise at'
+      name: wordingSunrise
+      required: false
+      type: TEXT
+      groupName: wording
+    - description: Alternative text for 'Sunset at' in the icon-tooltip (only visible if you've activated the day & night indication)
+      label: Translation 'Sunset at'
+      name: wordingSunset
+      required: false
+      type: TEXT
+      groupName: wording
+  parameterGroups:
+    - name: general
+      label: General settings
+      description: All settings which are related to the usage of this widget
+    - name: images
+      label: Image settings
+    - name: wording
+      label: Language settings
+      description: Set alternative wordings
+timestamp: Jan 14, 2021, 1:41:19 AM
+component: f7-page
+config:
+  style:
+    background: "=(dayjs().format() >= items[((!props.itemPrefix) ? '' : props.ItemPrefix) + 'ForecastToday_Sunrise'].state && dayjs().format() < items[((!props.itemPrefix) ? '' : props.ItemPrefix) + 'ForecastToday_Sunset'].state) ? 'linear-gradient(to bottom, #355b8e, #c0d4f0)' : 'repeat-x radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 5px) 50px 0px/420px 420px, repeat-x radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 5px) 10px 0px/650px 650px, repeat-x radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 5px) 200px 0px/450px 450px, repeat-x radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 5px) 200px 80px/350px 350px, repeat-x radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 5px) 0px 0px/260px 260px, repeat-x radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 3px) 50px 0px/200px 200px, repeat-x radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 4px) 130px 0px/250px 100px, repeat-x radial-gradient(rgba(255,255,255,.4), rgba(255,255,255,.1) 2px, transparent 1px) 50px 0px/150px 50px, repeat-x radial-gradient(white, rgba(255,255,255,.2) 1px, transparent 2px) 50px 0px/280px 480px, repeat-x radial-gradient(white, rgba(255,255,255,.2) 1px, transparent 2px) 70px 0px/180px 350px, repeat-x radial-gradient(white, rgba(255,255,255,.1) 1px, transparent 1px) 80px 0px/200px 120px, repeat-x radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 2px) 100px 0px/200px 180px, repeat-x radial-gradient(white, rgba(255,255,255,.1) 1px, transparent 5px) 100px 0px/350px 600px, linear-gradient(to bottom,#413D8F 0%,#CE9FC8 100%)'"
+    background-repeat: repeat-x
+    -ms-user-select: none
+    -moz-user-select: none
+    -webkit-user-select: none
+    user-select: none
+    overflow: hidden
+    --f7-page-navbar-offset: none
+    --f7-page-toolbar-top-offset: none
+    --f7-page-subnavbar-offset: none
+    --f7-page-searchbar-offset: none
+    --f7-page-content-extra-padding-top: none
+    --f7-page-toolbar-bottom-offset: none
+    --f7-page-content-extra-padding-bottom: none
+    --f7-theme-color: none
+    --f7-bars-bg-color: none
+    --f7-bars-border-color: none
+    --f7-navbar-shadow-image: none
+    --f7-navbar-text-color: white
+    --f7-bars-text-color: white
+    --f7-navbar-link-color: white
+    --f7-navbar-bg-color-rgb: none
+    --f7-bars-bg-color-rgb: none
+    --f7-bars-translucent-opacity: none
+    --f7-bars-translucent-blur: none
+    backdrop-filter: none
+    --f7-button-border-radius: 0
+    --weather-condition-icon-size: 30px
+    --weather-label-text-transform: normal
+    --weather-font-size-xsmall: 14px
+    --weather-font-size-small: 16px
+    --weather-font-size-medium: 18px
+    --weather-font-size-hero: 91px
+    --weather-font-color-main: white
+    --weather-forecast-location-font-color: rgba(255,255,255,.7)
+    --weather-forecast-text-shadow-light: 2px 2px rgba(0,0,0,.15)
+    --weather-forecast-text-shadow-strong: 2px 2px rgba(0,0,0,.35)
+    --weather-forecast-font-color-light: rgba(0,0,0,.35)
+    --weather-forecast-font-color: rgba(0,0,0,.7)
+slots:
+  default:
+    - component: Label
+      config:
+        text: "=!props.locationTitle ? items[(!props.itemPrefix2 ? (!props.itemPrefix ? '' : props.itemPrefix) : props.itemPrefix2) + 'StationName'].state : props.locationTitle"
+        class:
+          - text-align-right
+          - padding-right
+        style:
+          text-overflow: ellipsis
+          overflow: hidden
+          white-space: nowrap
+          line-height: var(--f7-navbar-link-line-height,var(--f7-navbar-height))
+          font-size: var(--weather-font-size-xsmall)
+          color: var(--weather-forecast-location-font-color)
+          text-shadow: var(--weather-forecast-text-shadow-light)
+          text-transform: uppercase
+          z-index: 999
+    - component: f7-block
+      config:
+        class:
+          - text-align-center
+          - padding-top
+        style:
+          z-index: 999
+      slots:
+        default:
+          - component: Label
+            config:
+              text: "=(!props.itemPrefix) ? Math.round(items.Current_Temperature.state.split(' ')[0]) + '°' : Math.round(items[props.itemPrefix + 'Current_Temperature'].state.split(' ')[0]) + '°'"
+              style:
+                font-size: var(--weather-font-size-hero)
+                font-weight: lighter
+                line-height: var(--weather-font-size-hero)
+                color: var(--weather-font-color-main)
+                text-shadow: var(--weather-forecast-text-shadow-strong)
+                overflow: hidden
+                z-index: 999
+          - component: Label
+            config:
+              text: "=(!props.itemPrefix) ? items.Current_Condition.state : items[props.itemPrefix + 'Current_Condition'].state"
+              style:
+                font-size: var(--weather-font-size-medium)
+                text-shadow: var(--weather-forecast-text-shadow-strong)
+                color: var(--weather-font-color-main)
+                text-overflow: ellipsis
+                white-space: nowrap
+                overflow: hidden
+                z-index: 999
+    - component: f7-block
+      config:
+        class:
+          - no-margin
+          - no-padding
+        style:
+          background: "=(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Iconid'].state === '01d') ? '' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Iconid'].state === '01n') ? '' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Iconid'].state === '02d') ? 'no-repeat top center/750px url(' + ((!props.imageFolder) ? '/static/files/weather_img/' : props.imageFolder) + '02.svg)' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Iconid'].state === '02n') ? 'no-repeat top center/750px url(' + ((props.imageFolder === undefined) ? '/static/files/weather_img/' : props.imageFolder) + '02.svg)' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Iconid'].state === '03d') ? 'no-repeat top center/750px url(' + ((props.imageFolder === undefined) ? '/static/files/weather_img/' : props.imageFolder) + '03.svg)' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Iconid'].state === '03n') ? 'no-repeat top center/750px url(' + ((props.imageFolder === undefined) ? '/static/files/weather_img/' : props.imageFolder) + '03.svg)' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Iconid'].state === '04d') ? 'no-repeat top center/750px url(' + ((props.imageFolder === undefined) ? '/static/files/weather_img/' : props.imageFolder) + '04.svg)' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Iconid'].state === '04n') ? 'no-repeat top center/750px url(' + ((props.imageFolder === undefined) ? '/static/files/weather_img/' : props.imageFolder) + '04.svg)' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Iconid'].state === '09d') ? 'no-repeat top center/750px url(' + ((props.imageFolder === undefined) ? '/static/files/weather_img/' : props.imageFolder) + '09.svg)' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Iconid'].state === '09n') ? 'no-repeat top center/750px url(' + ((props.imageFolder === undefined) ? '/static/files/weather_img/' : props.imageFolder) + '09.svg)' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Iconid'].state === '10d') ? 'no-repeat top center/750px url(' + ((props.imageFolder === undefined) ? '/static/files/weather_img/' : props.imageFolder) + '10.svg)' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Iconid'].state === '10n') ? 'no-repeat top center/750px url(' + ((props.imageFolder === undefined) ? '/static/files/weather_img/' : props.imageFolder) + '10.svg)' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Iconid'].state === '11d') ? 'no-repeat top center/750px url(' + ((props.imageFolder === undefined) ? '/static/files/weather_img/' : props.imageFolder) + '11.svg)' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Iconid'].state === '11n') ? 'no-repeat top center/750px url(' + ((props.imageFolder === undefined) ? '/static/files/weather_img/' : props.imageFolder) + '11.svg)' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Iconid'].state === '13d') ? 'no-repeat top center/750px url(' + ((props.imageFolder === undefined) ? '/static/files/weather_img/' : props.imageFolder) + '13.svg)' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Iconid'].state === '13n') ? 'no-repeat top center/750px url(' + ((props.imageFolder === undefined) ? '/static/files/weather_img/' : props.imageFolder) + '13.svg)' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Iconid'].state === '50d') ? 'no-repeat top center/750px url(' + ((props.imageFolder === undefined) ? '/static/files/weather_img/' : props.imageFolder) + '50.svg)' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Iconid'].state === '50n') ? 'no-repeat top center/750px url(' + ((props.imageFolder === undefined) ? '/static/files/weather_img/' : props.imageFolder) + '50.svg)' : '?'"
+          height: 100%
+          width: 100%
+          position: absolute
+          top: 0
+          left: 0
+          right: 0
+    - component: oh-image
+      config:
+        url: "=(dayjs().format() >= items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'ForecastToday_Sunrise'].state && dayjs().format() < items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'ForecastToday_Sunset'].state ) ? ((!props.imageFolder) ? '/static/files/weather_img/' : props.imageFolder) + 'sun.svg' : ((!props.imageFolder) ? '/static/files/weather_img/' : props.imageFolder) + 'moon.svg'"
+        style:
+          width: 100%
+          max-width: 150px
+          min-width: 70px
+          position: absolute
+          top: 5px
+          left: -50px
+          z-index: 999
+    - component: f7-block
+      config:
+        style:
+          overflow: hidden
+          position: absolute
+          bottom: 105px
+          width: 100%
+          height: 100%
+          z-index: -1
+      slots:
+        default:
+          - component: oh-image
+            config:
+              visible: =!props.disableLocalSightBg
+              url: "=(dayjs().format() >= items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'ForecastToday_Sunrise'].state && dayjs().format() < items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'ForecastToday_Sunset'].state ) ? ((!props.imageFolder) ? '/static/files/weather_img/' : props.imageFolder) + props.globalBackgroundDayImg : ((!props.imageFolder) ? '/static/files/weather_img/' : props.imageFolder) + props.globalBackgroundNightImg"
+              style:
+                position: absolute
+                bottom: 0
+                right: 0
+                left: 0
+                margin-right: auto
+                margin-left: auto
+                width: 100%
+                min-width: 800px
+                max-width: 1200px
+    - component: oh-image
+      config:
+        visible: =!props.disableLocalSightBg
+        url: "=((!props.imageFolder) ? '/static/files/weather_img/' : props.imageFolder) + props.localSightImg"
+        style:
+          position: absolute
+          bottom: 138px
+          right: 0
+          left: 0
+          margin-right: auto
+          margin-left: auto
+          width: 100%
+          min-width: 150px
+          max-width: 280px
+          z-index: 1
+    - component: f7-block
+      config:
+        class:
+          - text-align-center
+          - align-content-bottom
+          - no-margin
+        style:
+          border-top: 60px solid white
+          border-image-source: "='url(' + ((!props.imageFolder) ? '/static/files/weather_img/' : props.imageFolder) + 'bottom_mask-white.svg' + ')'"
+          -moz-border-image-source: "='url(' + ((!props.imageFolder) ? '/static/files/weather_img/' : props.imageFolder) + 'bottom_mask-white.svg' + ')'"
+          -webkit-border-image-source: "='url(' + ((!props.imageFolder) ? '/static/files/weather_img/' : props.imageFolder) + 'bottom_mask-white.svg' + ')'"
+          -o-border-image-source: "='url(' + ((!props.imageFolder) ? '/static/files/weather_img/' : props.imageFolder) + 'bottom_mask-white.svg' + ')'"
+          -webkit-appearance: none
+          border-image-slice: 100% 0 0 0
+          border-image-width: 1 0 0 0
+          position: absolute
+          bottom: 0
+          left: 0
+          width: 100%
+      slots:
+        default:
+          - component: f7-block
+            config:
+              class:
+                - no-margin
+                - no-padding
+              style:
+                position: absolute
+                left: 0
+                bottom: 0
+                height: calc(100% + 2px)
+                width: 100%
+                background: white
+                -webkit-box-shadow: 10px 10px 10px 20px white
+                -moz-box-shadow: 10px 10px 10px 20px white
+                box-shadow: 10px 10px 10px 20px white
+          - component: f7-segmented
+            config:
+              strong: true
+              style:
+                --f7-segmented-strong-button-active-box-shadow: 0 4px 0px -2px gray
+                --f7-segmented-strong-button-font-color: gray
+                --f7-segmented-strong-bg-color: white
+                z-index: 999
+            slots:
+              default:
+                - component: oh-button
+                  config:
+                    text: '=(!props.wordingForecastHours && !props.forecastHours) ? "12-hour forecast" : (props.wordingForecastHours && !props.forecastHours) ? 12 + props.wordingForecastHours : (!props.wordingForecastHours && props.forecastHours) ? props.forecastHours + "-hour forecast" : props.forecastHours + props.wordingForecastHours'
+                    active: =!vars.tab || vars.tab === 'hourly_forecast'
+                    action: variable
+                    actionVariable: tab
+                    actionVariableValue: hourly_forecast
+                    style:
+                      color: '=(vars.tab === "daily_forecast") ? "lightgray" : "black"'
+                - component: oh-button
+                  config:
+                    text: '=(!props.wordingForecastDays && !props.forecastDays) ? "3-day forecast" : (props.wordingForecastDays && !props.forecastDays) ? 3 + props.wordingForecastDays : (!props.wordingForecastDays && props.forecastDays) ? props.forecastDays + "-day forecast" : props.forecastDays + props.wordingForecastDays'
+                    active: =vars.tab === 'daily_forecast'
+                    action: variable
+                    actionVariable: tab
+                    actionVariableValue: daily_forecast
+                    style:
+                      color: '=(!vars.tab || vars.tab === "hourly_forecast") ? "lightgray" : "black"'
+          - component: f7-swiper
+            config:
+              visible: =!vars.tab || vars.tab === 'hourly_forecast'
+              navigation: true
+              class:
+                - padding-top
+                - padding-bottom
+              params:
+                initalSlide: 0
+                runCallbacksOnInit: true
+                grabCursor: true
+                observer: true
+                observeSlideChildren: true
+                updateOnWindowResize: true
+                spaceBetween: 5
+                mousewheel: true
+                keyboard: true
+                watchOverflow: true
+                breakpoints:
+                  "0":
+                    slidesPerView: 1
+                  "240":
+                    slidesPerView: "=(!props.forecastHours) ? 2 : ((props.forecastHours < 2) ? Math.round(Number(props.forecastHours) + 1) : 2)"
+                  "320":
+                    slidesPerView: "=(!props.forecastHours) ? 3 : ((props.forecastHours < 3) ? Math.round(Number(props.forecastHours) + 1) : 3)"
+                  "480":
+                    slidesPerView: "=(!props.forecastHours) ? 4 : ((props.forecastHours < 4) ? Math.round(Number(props.forecastHours) + 1) : 4)"
+                  "640":
+                    slidesPerView: "=(!props.forecastHours) ? 5 : ((props.forecastHours < 5) ? Math.round(Number(props.forecastHours) + 1) : 5)"
+              style:
+                --swiper-navigation-size: 20px
+                --swiper-navigation-color: gray
+            slots:
+              default:
+                - component: oh-repeater
+                  config:
+                    sourceType: range
+                    for: hour
+                    rangeStart: 0
+                    rangeStop: "=(!props.forecastHours) ? 12 : Number(props.forecastHours)"
+                    fragment: true
+                  slots:
+                    default:
+                      - component: f7-swiper-slide
+                        config:
+                          style:
+                            background: "=(props.sunIndicator === true) ? ((dayjs().add(loop.hour,'hour').format() >= items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunrise'].state && dayjs().add(loop.hour,'hour').format() <= items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunset'].state) ? 'rgba(44,130,201,.15)' : 'rgba(190,144,212,.15)') : 'none'"
+                            border-radius: 5px
+                        slots:
+                          default:
+                            - component: f7-icon
+                              config:
+                                visible: "=(dayjs().add(loop.hour,'hour').startOf('hour').format() === dayjs(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunrise'].state).startOf('hour').format() && props.sunIndicator === true)"
+                                f7: sun_max_fill
+                                color: black
+                                size: 17px
+                                tooltip: "=((!props.wordingSunrise) ? 'Sunrise at ' : props.wordingSunrise + ' ') + ((!props.dateFormat) ? dayjs(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunrise'].state).format('h:mm A') : dayjs(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunrise'].state).format('H:mm')+' h') + '<br><b>' + dayjs(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunrise'].state).fromNow() + '</b>'"
+                                style:
+                                  position: absolute
+                                  right: 3px
+                                  top: 3px
+                                  cursor: pointer
+                                  z-index: 9999
+                            - component: f7-icon
+                              config:
+                                visible: "=(dayjs().add(loop.hour,'hour').startOf('hour').format() === dayjs(items['Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunset'].state).startOf('hour').format() && props.sunIndicator === true)"
+                                f7: moon_fill
+                                color: black
+                                size: 17px
+                                tooltip: "=((!props.wordingSunset) ? 'Sunset at ' : props.wordingSunset + ' ') + ((!props.dateFormat) ? dayjs(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunset'].state).format('h:mm A') : dayjs(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunset'].state).format('H:mm') + ' h') + '<br><b>' + dayjs(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunset'].state).fromNow() + '</b>'"
+                                style:
+                                  position: absolute
+                                  right: 3px
+                                  top: 3px
+                                  cursor: pointer
+                                  z-index: 9999
+                            - component: f7-row
+                              config:
+                                class:
+                                  - justify-content-center
+                              slots:
+                                default:
+                                  - component: Label
+                                    config:
+                                      text: "=(loop.hour === 0) ? ((!props.wordingNow) ? 'Now' : props.wordingNow) : ((!props.dateFormat) ? dayjs().add(loop.hour,'hour').startOf('hour').format('h A') : dayjs().add(loop.hour,'hour').startOf('hour').format('H')) + (!props.timestampSuffix ? '' : ' ' + props.timestampSuffix)"
+                                      style:
+                                        font-weight: 400
+                                        color: var(--weather-forecast-font-color)
+                                        text-transform: var(--weather-label-text-transform)
+                            - component: f7-row
+                              config:
+                                class:
+                                  - justify-content-center
+                                  - align-items-center
+                              slots:
+                                default:
+                                  - component: f7-icon
+                                    config:
+                                      f7: "=(items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Iconid'].state === '01d') ? 'sun_max' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Iconid'].state === '01n') ? 'moon_stars' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Iconid'].state === '02d') ? 'cloud_sun' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Iconid'].state === '02n') ? 'cloud_moon' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Iconid'].state === '03d') ? 'cloud' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Iconid'].state === '03n') ? 'cloud' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Iconid'].state === '04d') ? 'cloud' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Iconid'].state === '04n') ? 'cloud' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Iconid'].state === '09d') ? 'cloud_heavyrain' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Iconid'].state === '09n') ? 'cloud_heavyrain' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Iconid'].state === '10d') ? 'cloud_sun_rain' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Iconid'].state === '10n') ? 'cloud_moon_rain' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Iconid'].state === '11d') ? 'cloud_sun_bolt' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Iconid'].state === '11n') ? 'cloud_moon_bolt' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Iconid'].state === '13d') ? 'cloud_snow' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Iconid'].state === '13n') ? 'cloud_snow' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Iconid'].state === '50d') ? 'cloud_fog' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Iconid'].state === '50n') ? 'cloud_fog' : ''"
+                                      size: var(--weather-condition-icon-size)
+                                      style:
+                                        padding-right: 5px
+                                        color: var(--weather-forecast-font-color)
+                                  - component: Label
+                                    config:
+                                      text: "=Math.round(items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Temperature'].state.split(' ')[0]) + '°'"
+                                      style:
+                                        font-size: var(--weather-font-size-small)
+                                        font-weight: 700
+                                        color: var(--weather-forecast-font-color)
+                            - component: f7-row
+                              config:
+                                class:
+                                  - justify-content-center
+                                  - align-items-center
+                              slots:
+                                default:
+                                  - component: f7-icon
+                                    config:
+                                      f7: umbrella
+                                      size: 15
+                                      style:
+                                        color: var(--weather-forecast-font-color-light)
+                                        padding-right: 3px
+                                  - component: Label
+                                    config:
+                                      text: "=Math.round(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1)) + '_Precipprobability'].state.split(' ')[0]) + '%'"
+                                      style:
+                                        font-size: var(--weather-font-size-small)
+                                        font-weight: 400
+                                        color: var(--weather-forecast-font-color-light)
+          - component: f7-swiper
+            config:
+              visible: =vars.tab === 'daily_forecast'
+              navigation: true
+              class:
+                - padding-top
+                - padding-bottom
+              params:
+                initalSlide: 0
+                grabCursor: true
+                observer: true
+                spaceBetween: 5
+                observeSlideChildren: true
+                updateOnWindowResize: true
+                watchOverflow: true
+                mousewheel: true
+                keyboard: true
+                breakpoints:
+                  "0":
+                    slidesPerView: 1
+                  "210":
+                    slidesPerView: "=(!props.forecastDays) ? 2 : ((props.forecastDays < 2) ? Math.round(Number(props.forecastDays) + 1) : 2)"
+                  "480":
+                    slidesPerView: "=(!props.forecastDays) ? 3 : ((props.forecastDays < 3) ? Math.round(Number(props.forecastDays) + 1) : 3)"
+                  "640":
+                    slidesPerView: "=(!props.forecastDays) ? 4 : ((props.forecastDays < 4) ? Math.round(Number(props.forecastDays) + 1) : 4)"
+              style:
+                --swiper-navigation-size: 20px
+                --swiper-navigation-color: gray
+            slots:
+              default:
+                - component: oh-repeater
+                  config:
+                    sourceType: range
+                    for: day
+                    rangeStart: 0
+                    rangeStop: "=(!props.forecastDays) ? 3 : Number(props.forecastDays)"
+                    fragment: true
+                  slots:
+                    default:
+                      - component: f7-swiper-slide
+                        config: {}
+                        slots:
+                          default:
+                            - component: f7-row
+                              config:
+                                class:
+                                  - justify-content-center
+                                  - align-items-center
+                              slots:
+                                default:
+                                  - component: Label
+                                    config:
+                                      text: "=(loop.day === 0) ? ((!props.wordingToday) ? 'Today' : props.wordingToday) : dayjs().add(loop.day,'day').startOf('day').format('dddd')"
+                                      style:
+                                        color: var(--weather-forecast-font-color)
+                                        text-transform: var(--weather-label-text-transform)
+                            - component: f7-icon
+                              config:
+                                f7: "=(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + loop.day_idx))) + '_Iconid'].state === '01d') ? 'sun_max' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + loop.day_idx))) + '_Iconid'].state === '01n') ? 'moon_stars' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + loop.day_idx))) + '_Iconid'].state === '02d') ? 'cloud_sun' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + loop.day_idx))) + '_Iconid'].state === '02n') ? 'cloud_moon' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + loop.day_idx))) + '_Iconid'].state === '03d') ? 'cloud' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + loop.day_idx))) + '_Iconid'].state === '03n') ? 'cloud' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + loop.day_idx))) + '_Iconid'].state === '04d') ? 'cloud' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + loop.day_idx))) + '_Iconid'].state === '04n') ? 'cloud' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + loop.day_idx))) + '_Iconid'].state === '09d') ? 'cloud_heavyrain' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + loop.day_idx))) + '_Iconid'].state === '09n') ? 'cloud_heavyrain' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + loop.day_idx))) + '_Iconid'].state === '10d') ? 'cloud_sun_rain' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + loop.day_idx))) + '_Iconid'].state === '10n') ? 'cloud_moon_rain' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + loop.day_idx))) + '_Iconid'].state === '11d') ? 'cloud_sun_bolt' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + loop.day_idx))) + '_Iconid'].state === '11n') ? 'cloud_moon_bolt' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + loop.day_idx))) + '_Iconid'].state === '13d') ? 'cloud_snow' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + loop.day_idx))) + '_Iconid'].state === '13n') ? 'cloud_snow' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + loop.day_idx))) + '_Iconid'].state === '50d') ? 'cloud_fog' : (items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + loop.day_idx))) + '_Iconid'].state === '50n') ? 'cloud_fog' : '?'"
+                                size: var(--weather-condition-icon-size)
+                                style:
+                                  color: var(--weather-forecast-font-color)
+                            - component: f7-row
+                              config:
+                                class:
+                                  - justify-content-center
+                              slots:
+                                default:
+                                  - component: Label
+                                    config:
+                                      text: "=Math.round(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + ((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + (loop.day_idx))) + '_Maxtemperature'].state.split(' ')[0])+'°'"
+                                      style:
+                                        font-size: var(--weather-font-size-small)
+                                        font-weight: 700
+                                        color: var(--weather-forecast-font-color)
+                                  - component: Label
+                                    config:
+                                      text: ""
+                                      style:
+                                        color: rgba(0,0,0,.2)
+                                  - component: Label
+                                    config:
+                                      text: "=Math.round(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + ((loop.day === 0) ? 'Today' : ((loop.day === 1) ? 'Tomorrow' : 'Day' + (loop.day_idx))) + '_Mintemperature'].state.split(' ')[0])+'°'"
+                                      style:
+                                        font-size: var(--weather-font-size-small)
+                                        font-weight: 700
+                                        color: var(--weather-forecast-font-color-light)
