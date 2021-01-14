@@ -118,7 +118,7 @@ slots:
     - component: f7-block
       config:
         style:
-          background: "=(dayjs().format() >= items[((!props.itemPrefix) ? '' : props.ItemPrefix) + 'ForecastToday_Sunrise'].state && dayjs().format() < items[((!props.itemPrefix) ? '' : props.ItemPrefix) + 'ForecastToday_Sunset'].state) ? 'linear-gradient(to bottom, #355b8e, #c0d4f0)' : 'linear-gradient(to bottom, #413D8F, #CE9FC8)'"
+          background: "=(dayjs().format() >= items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'ForecastToday_Sunrise'].state && dayjs().format() < items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'ForecastToday_Sunset'].state) ? 'linear-gradient(to bottom, #355b8e, #c0d4f0)' : 'linear-gradient(to bottom, #413D8F, #CE9FC8)'"
           background-size: cover
           background-repeat: no-repeat
           background-position: bottom left
