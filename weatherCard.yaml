@@ -183,7 +183,7 @@ config:
     --weather-text-transform-time: uppercase
 slots:
   default:
-    - component: oh-button
+    - component: oh-link
       config:
         visible: "=props.widget_action && (vars.moreInfo === false || !vars.moreInfo) ? true : false"
         actionPropsParameterGroup: widgetAction
@@ -192,6 +192,7 @@ slots:
           - no-padding
           - no-margin
         style:
+          max-height: 192px
           width: 100%
           height: 100%
           position: absolute
