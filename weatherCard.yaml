@@ -63,6 +63,18 @@ props:
       required: false
       type: BOOLEAN
       groupName: lookandfeel
+    - description: Overwrite the global font-color as rgb (<u>default:</u> <b>255,255,255<b>)
+      label: Font color (rgb)
+      name: fontColor
+      required: false
+      type: TEXT
+      groupName: lookandfeel
+    - description: Overwrite the global text shadow color as rgb (<u>default:</u> <b>0,0,0<b>)
+      label: Text shadow color(rgb)
+      name: textShadowColor
+      required: false
+      type: TEXT
+      groupName: lookandfeel
     - label: Daytime background indication color
       name: sunIndicatorColorDay
       required: false
@@ -145,7 +157,7 @@ props:
     - name: widgetAction
       context: action
       label: Action
-      description: Action to perform when the element is clicked
+      description: Action to perform when the element is clicked (<b>Experimental</b>)
     - name: lookandfeel
       label: Look & Feel
       description: Everything that influences the look & feel of the widget
@@ -166,11 +178,12 @@ config:
     user-select: none
     background: "=dayjs().format() >= items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'ForecastToday_Sunrise'].state && dayjs().format() < items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'ForecastToday_Sunset'].state ? 'linear-gradient(to bottom, #355b8e, #c0d4f0)' : 'linear-gradient(to bottom, #413D8F, #CE9FC8)'"
     border-radius: var(--weather-card-border-radius)
-    color: var(--weather-font-color)
-    --weather-font-color: white
-    --weather-card-border-radius: 20px
-    --weather-card-color: 255,255,255
+    
+    --weather-card-color: "=(!props.fontColor) ? '255,255,255' : props.fontColor"
+    --weather-card-text-shadow-color: "=(!props.textShadowColor) ? '0,0,0' : props.textShadowColor"
     --weather-card-text-color: rgba(var(--weather-card-color),1)
+    color: var(--weather-card-text-color)
+    --weather-card-border-radius: 20px
     --weather-font-size-xxsmall: 12px
     --weather-font-size-xsmall: 14px
     --weather-font-size-small: 16px
@@ -178,8 +191,8 @@ config:
     --weather-font-size-large: 26px
     --weather-font-size-xlarge: 60px
     --weather-font-size-xxlarge: 70px
-    --weather-text-shadow-light: 2px 2px rgba(0,0,0,.15)
-    --weather-text-shadow-strong: 2px 2px rgba(0,0,0,.35)
+    --weather-text-shadow-light: 2px 2px rgba(var(--weather-card-text-shadow-color),.15)
+    --weather-text-shadow-strong: 2px 2px rgba(var(--weather-card-text-shadow-color),.35)
     --weather-text-transform-time: uppercase
 slots:
   default:
@@ -240,7 +253,7 @@ slots:
                       white-space: nowrap
                       overflow: hidden
                       text-overflow: ellipsis
-                      color: rgba(255,255,255,.7)
+                      color: rgba(var(--weather-card-color),.7)
                       letter-spacing: .75px
                       font-size: var(--weather-font-size-xxsmall)
                       text-shadow: var(--weather-text-shadow-light)
@@ -350,7 +363,7 @@ slots:
                         config:
                           text:  | 
                           style:
-                            color: rgba(255,255,255,.35)
+                            color: rgba(var(--weather-card-color),.25)
                             text-shadow: var(--weather-text-shadow-light)
                       - component: Label
                         config:
@@ -415,7 +428,7 @@ slots:
               strong: true
               textColor: white
               style:
-                --f7-segmented-strong-button-active-box-shadow: 0px 4px 0 -1px white
+                --f7-segmented-strong-button-active-box-shadow: 0px 4px 0 -1px rgba(var(--weather-card-color),1)
                 --f7-segmented-strong-button-active-text-color: rgba(var(--weather-card-color),1)
                 --f7-button-text-color: rgba(var(--weather-card-color),.5)
                 --f7-segmented-strong-text-color: rgba(var(--weather-card-color),.5)
@@ -566,7 +579,7 @@ slots:
                                       size: 48
                                       style:
                                         color: var(--weather-card-text-color)
-                                        text-shadow: 2px 2px rgba(0,0,0,.25)
+                                        text-shadow: var(--weather-text-shadow-strong)
                                         padding-top: 5px
                                         padding-bottom: 5px
                                   - component: Label
