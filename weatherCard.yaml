@@ -164,7 +164,7 @@ props:
     - name: localization
       label: Localization settings
       description: Set alternative wordings & date pattern
-timestamp: Jan 15, 2021, 9:45:50 AM
+timestamp: Jan 17, 2021, 3:00:07 AM
 component: f7-card
 config:
   class:
@@ -351,7 +351,7 @@ slots:
                     default:
                       - component: Label
                         config:
-                          text: "=Math.round(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Humidity'].state.split(' ')[0]) + ' ' + items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Humidity'].state.split(' ')[1]"
+                          text: "=Math.round(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Humidity'].state.split(' ')[0]) + ' ' + items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Humidity'].state.split(' ')[1]"
                           tooltip: Humidity
                           style:
                             white-space: nowrap
@@ -366,7 +366,7 @@ slots:
                             text-shadow: var(--weather-text-shadow-light)
                       - component: Label
                         config:
-                          text: "=Math.round(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Windspeed'].state.split(' ')[0]) + ' ' + items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Windspeed'].state.split(' ')[1]"
+                          text: "=Math.round(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Windspeed'].state.split(' ')[0]) + ' ' + items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Current_Windspeed'].state.split(' ')[1]"
                           tooltip: Windspeed
                           style:
                             white-space: nowrap
@@ -674,7 +674,7 @@ slots:
                                         text-shadow: var(--weather-text-shadow-light)
                                   - component: Label
                                     config:
-                                      text:  | 
+                                      text: " | "
                                       style:
                                         font-size: var(--weather-font-size-normal)
                                         color: rgba(255,255,255,.2)
@@ -737,6 +737,34 @@ slots:
                             border-radius: 5px
                         slots:
                           default:
+                          
+                            - component: f7-icon
+                              config:
+                                visible: "=(dayjs().add(loop.hour,'hour').startOf('hour').format() === dayjs(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunrise'].state).startOf('hour').format() && props.sunIndicator === true)"
+                                f7: sun_max_fill
+                                size: 17px
+                                tooltip: "=((!props.wordingSunrise) ? 'Sunrise at ' : props.wordingSunrise + ' ') + ((!props.dateFormat) ? dayjs(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunrise'].state).format('h:mm A') : dayjs(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunrise'].state).format('H:mm') + (!props.timestampSuffix ? '' : ' ' + props.timestampSuffix) ) + '<br><b>' + dayjs(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunrise'].state).fromNow() + '</b>'"
+                                style:
+                                  position: absolute
+                                  right: 3px
+                                  top: 3px
+                                  cursor: pointer
+                                  z-index: 998
+                                  color: var(--weather-card-text-color)
+                            - component: f7-icon
+                              config:
+                                visible: "=(dayjs().add(loop.hour,'hour').startOf('hour').format() === dayjs(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunset'].state).startOf('hour').format() && props.sunIndicator === true)"
+                                f7: moon_fill
+                                size: 17px
+                                tooltip: "=((!props.wordingSunset) ? 'Sunset at ' : props.wordingSunset + ' ') + ((!props.dateFormat) ? dayjs(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunset'].state).format('h:mm A') : dayjs(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunset'].state).format('H:mm') + (!props.timestampSuffix ? '' : ' ' + props.timestampSuffix) ) + '<br><b>' + dayjs(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunset'].state).fromNow() + '</b>'"
+                                style:
+                                  position: absolute
+                                  right: 3px
+                                  top: 3px
+                                  cursor: pointer
+                                  z-index: 998
+                                  color: var(--weather-card-text-color)                          
+                          
                             - component: f7-row
                               config:
                                 class:
