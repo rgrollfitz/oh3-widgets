@@ -459,7 +459,7 @@ slots:
                                       default:
                                         - component: Label
                                           config:
-                                            text: "=!props.wordingUvindex ? '%-Precipitation' : props.wordingPrecipitation"
+                                            text: "=!props.wordingPrecipitation ? '%-Precipitation' : props.wordingPrecipitation"
                                   - component: f7-col
                                     config:
                                       style:
