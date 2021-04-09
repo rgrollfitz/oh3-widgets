@@ -360,7 +360,7 @@ slots:
                             text-shadow: var(--weather-text-shadow-light)
                       - component: Label
                         config:
-                          text:  | 
+                          text: =" | "
                           style:
                             color: rgba(var(--weather-card-color),.25)
                             text-shadow: var(--weather-text-shadow-light)
@@ -674,7 +674,7 @@ slots:
                                         text-shadow: var(--weather-text-shadow-light)
                                   - component: Label
                                     config:
-                                      text: " | "
+                                      text: =" | "
                                       style:
                                         font-size: var(--weather-font-size-normal)
                                         color: rgba(255,255,255,.2)
