@@ -38,7 +38,7 @@ props:
       required: false
       type: BOOLEAN
       groupName: general
-    - description: Acitvate 24-hour clock-format (<u>default:</u> <b>12-hour clock-format</b>)
+    - description: Activate 24-hour clock-format (<u>default:</u> <b>12-hour clock-format</b>)
       label: 24h clock-format
       name: dateFormat
       required: false
@@ -360,7 +360,7 @@ slots:
                 - padding-top
                 - padding-bottom
               params:
-                initalSlide: 0
+                initialSlide: 0
                 runCallbacksOnInit: true
                 grabCursor: true
                 observer: true
@@ -491,7 +491,7 @@ slots:
                 - padding-top
                 - padding-bottom
               params:
-                initalSlide: 0
+                initialSlide: 0
                 grabCursor: true
                 observer: true
                 spaceBetween: 5

@@ -25,7 +25,7 @@ props:
       required: false
       type: TEXT
       groupName: general
-    - description: Format of the timestamp (<u>default:</u> <b>HH:mm</b>)<br>Visit <a 'https://day.js.org/docs/en/display/format'>https://day.js.org/docs/en/display/format</a> for more informations.
+    - description: Format of the timestamp (<u>default:</u> <b>HH:mm</b>)<br>Visit <a 'https://day.js.org/docs/en/display/format'>https://day.js.org/docs/en/display/format</a> for more information.
       label: Timestamp format
       name: timestampFormat
       required: false
