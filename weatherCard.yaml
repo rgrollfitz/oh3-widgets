@@ -519,6 +519,7 @@ slots:
                     default:
                       - component: f7-swiper-slide
                         config:
+                          visible: "=items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Temperature'].state !== '-'"
                           expandable: true
                           style:
                             background: "=(props.sunIndicator) ? ((dayjs().add(loop.hour,'hour').format() >= items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunrise'].state && dayjs().add(loop.hour,'hour').format() <= items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunset'].state) ? (!props.sunIndicatorColorDay ? 'rgba(255,255,255,.2)' : props.sunIndicatorColorDay) : (!props.sunIndicatorColorNight ? 'rgba(41,109,152,.2)' : props.sunIndicatorColorNight)) : 'none'"
@@ -731,6 +732,7 @@ slots:
                       - component: f7-swiper-slide
                         config:
                           id: =loop.hour_idx
+                          visible: "=items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_PrecipitationAmount'].state !== '-'"
                           expandable: true
                           style:
                             background: "=(props.sunIndicator) ? ((dayjs().add(loop.hour,'hour').format() >= items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunrise'].state && dayjs().add(loop.hour,'hour').format() <= items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunset'].state) ? (!props.sunIndicatorColorDay ? 'rgba(255,255,255,.2)' : props.sunIndicatorColorDay) : (!props.sunIndicatorColorNight ? 'rgba(41,109,152,.2)' : props.sunIndicatorColorNight)) : 'none'"
