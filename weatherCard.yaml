@@ -32,7 +32,7 @@ props:
       required: false
       type: TEXT
       groupName: general
-    - description: Show all informations at once (increases height)
+    - description: Show all information at once (increases height)
       label: Big card
       name: bigCard
       required: false
@@ -63,7 +63,8 @@ props:
       required: false
       type: BOOLEAN
       groupName: lookandfeel
-    - description: Overwrite the global font-color as rgb (<u>default:</u> <b>255,255,255<b>)
+    - default: 255,255,255
+      description: Overwrite the global font-color as rgb (<u>default:</u> <b>255,255,255<b>)
       label: Font color (rgb)
       name: fontColor
       required: false
@@ -93,13 +94,13 @@ props:
       required: false
       type: TEXT
       groupName: localization
-    - description: Format of the timestamp below the location-name (<u>default:</u> <b>DD. MMMM YYYY</b>)<br>Visit <a 'https://day.js.org/docs/en/display/format'>https://day.js.org/docs/en/display/format</a> for more informations.
+    - description: Format of the timestamp below the location-name (<u>default:</u> <b>DD. MMMM YYYY</b>)<br>Visit <a 'https://day.js.org/docs/en/display/format'>https://day.js.org/docs/en/display/format</a> for more information.
       label: Timestamp format
       name: dateScheme
       required: false
       type: TEXT
       groupName: localization
-    - description: Acitvate 24-hour time-format (<u>default:</u> <b>12-hour clock-format</b>)
+    - description: Activate 24-hour time-format (<u>default:</u> <b>12-hour clock-format</b>)
       label: 24h hour-format
       name: dateFormat
       required: false
@@ -127,7 +128,7 @@ props:
       type: TEXT
       groupName: localization
     - label: Translation '%-Precipitation'
-      name: wordingForecastPrecib
+      name: wordingForecastPrecipitation
       required: false
       type: TEXT
       groupName: localization
@@ -461,7 +462,7 @@ slots:
                     actionVariableValue: daily_forecast
                 - component: oh-button
                   config:
-                    text: "=(!props.wordingForecastPrecib) ? '%-Precipitation' : props.wordingForecastPrecib"
+                    text: "=(!props.wordingForecastPrecipitation) ? '%-Precipitation' : props.wordingForecastPrecipitation"
                     color: var(--weather-card-text-color)
                     active: =vars.tab === 'precip_forecast'
                     action: variable
@@ -482,7 +483,7 @@ slots:
               class:
                 - padding-top
               params:
-                initalSlide: 0
+                initialSlide: 0
                 runCallbacksOnInit: true
                 grabCursor: true
                 observer: true
@@ -596,7 +597,7 @@ slots:
               class:
                 - padding-top
               params:
-                initalSlide: 0
+                initialSlide: 0
                 grabCursor: true
                 observer: true
                 spaceBetween: 5
@@ -693,7 +694,7 @@ slots:
               class:
                 - padding-top
               params:
-                initalSlide: 0
+                initialSlide: 0
                 runCallbacksOnInit: true
                 grabCursor: true
                 observer: true
@@ -737,7 +738,6 @@ slots:
                             border-radius: 5px
                         slots:
                           default:
-                          
                             - component: f7-icon
                               config:
                                 visible: "=(dayjs().add(loop.hour,'hour').startOf('hour').format() === dayjs(items[((!props.itemPrefix) ? '' : props.itemPrefix) + 'Forecast' + (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').format() ? 'Today' : (dayjs().add(loop.hour,'hour').startOf('day').format() === dayjs().startOf('day').add(1,'day').format() ? 'Tomorrow' : 'Day2')) + '_Sunrise'].state).startOf('hour').format() && props.sunIndicator === true)"
@@ -763,8 +763,8 @@ slots:
                                   top: 3px
                                   cursor: pointer
                                   z-index: 998
-                                  color: var(--weather-card-text-color)                          
-                          
+                                  color: var(--weather-card-text-color)
+
                             - component: f7-row
                               config:
                                 class:
