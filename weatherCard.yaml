@@ -599,7 +599,7 @@ slots:
                                         padding-bottom: 5px
                                   - component: Label
                                     config:
-                                      text: "=Math.round(items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Temperature'].state.split(' ')[0]) + '°'"
+                                      text: "=Math.round(items[((!props.itemPrefix) ? '' : props.itemPrefix) + ((loop.hour === 0) ? 'Current' : 'ForecastHours' + ((loop.hour_idx+1 < 10 ? '0'+(loop.hour_idx+1) : loop.hour_idx+1))) + '_Temperature'].state.split(' ')[0] * 10 ) / 10 + '°'"
                                       style:
                                         font-size: var(--weather-font-size-normal)
                                         font-weight: 400
